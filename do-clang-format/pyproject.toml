@@ -1,0 +1,33 @@
+[project]
+name = "do-clang-format"
+authors = [{ name = "Alex M. M.", email = "acdenissk69@gmail.com" }]
+classifiers = ["License :: OSI Approved :: Boost Software License 1.0 (BSL-1.0)"]
+description = "Format C and C++ files with clang-format"
+version = "0.1.0"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+do-clang-format = "do_clang_format:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+line-length = 80
+
+[tool.ruff.lint]
+extend-select = [
+    'B',      # flake8-bugbear
+    'C4',     # flake8-comprehensions
+    'C90',    # mccabe
+    'I',      # isort
+    'N',      # pep8-naming
+    'Q',      # flake8-quotes
+    'RUF100', # ruff (unused noqa)
+    'S',      # flake8-bandit
+    'W',      # pycodestyle
+]
+ignore = ["S603"]

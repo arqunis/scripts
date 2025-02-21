@@ -18,7 +18,7 @@ class Status(IntEnum):
 
 @dataclass
 class Arguments:
-    src: Path
+    src: list[Path]
     clangformat: str
     dry: bool
 
@@ -28,7 +28,7 @@ def _parse_arguments(args: list[str]) -> Arguments:
         description="Recursively runs clang-format on C and C++ source code"
     )
 
-    parser.add_argument("src", type=Path, help="Directory to format files in")
+    parser.add_argument("src", type=Path, nargs="+", help="Directories to format files in")
 
     parser.add_argument(
         "--clang-format",
@@ -83,19 +83,20 @@ def _run_clang_format(clangformat: str, path: Path) -> None:
 def main(args: list[str]) -> Status:
     parsed = _parse_arguments(args)
 
-    try:
-        for p in _walk_source_files(parsed.src):
-            print(f"Formatting {p}")
+    for src in parsed.src:
+        try:
+            for p in _walk_source_files(src):
+                print(f"Formatting {p}")
 
-            _run_clang_format(parsed.clangformat, p)
+                _run_clang_format(parsed.clangformat, p)
 
-    except FileNotFoundError:
-        print(
-            f"Error: Unable to find `{parsed.src}`. Perhaps you misspelt it?",
-            file=sys.stderr,
-        )
+        except FileNotFoundError:
+            print(
+                f"Error: Unable to find `{src}`. Perhaps you misspelt it?",
+                file=sys.stderr,
+            )
 
-        return Status.ERROR
+            return Status.ERROR
 
     print("Completed.")
 
